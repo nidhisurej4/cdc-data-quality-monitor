@@ -1,0 +1,36 @@
+# Data quality rules, applied to every captured change.
+# Supported types: not_null, range, allowed_values, regex, date_order, max_age_days
+tables:
+  bookings:
+    key: booking_id
+    rules:
+      - name: customer_required
+        type: not_null
+        column: customer_code
+        severity: high
+      - name: valid_locode_origin
+        type: regex
+        column: origin
+        pattern: "^[A-Z]{5}$"
+        severity: medium
+      - name: valid_locode_destination
+        type: regex
+        column: destination
+        pattern: "^[A-Z]{5}$"
+        severity: medium
+      - name: container_count_range
+        type: range
+        column: container_count
+        min: 1
+        max: 500
+        severity: high
+      - name: rate_positive
+        type: range
+        column: rate_usd
+        min: 0.01
+        severity: high
+      - name: known_status
+        type: allowed_values
+        column: status
+        values: [PENDING, CONFIRMED, SHIPPED, CANCELLED]
+        severity: low
